@@ -29,7 +29,7 @@ jobs:
 
       - name: Download original dataset
         run: |
-          gdown --fuzzy "https://drive.google.com/file/d/1FQsj7kzYsinjBG_7tfz67fqtsuhNiAef/view?usp=sharing" -O original/
+          gdown "https://drive.google.com/file/d/1FQsj7kzYsinjBG_7tfz67fqtsuhNiAef/view?usp=sharing" -O original/
 
       - name: Generate SHA-256 checksums
         run: |
