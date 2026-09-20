@@ -1,0 +1,44 @@
+name: XGBoost 10-pair binary reproduction
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reproduce-10-pairs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install reproduction dependencies
+        run: |
+          python -m pip install --upgrade pandas==3.0.6 scikit-learn==1.9.1 imbalanced-learn==0.14.2 xgboost==3.2.0
+
+      - name: Run 10-pair XGBoost reproduction
+        run: python reproduction/run_10pair_xgboost.py
+
+      - name: Show reproduction report
+        run: |
+          echo "=== 10-Pair Binary XGBoost Reproduction ==="
+          cat notes/xgboost_10pair_reproduction.md
+
+      - name: Commit reproduction outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes/xgboost_10pair_reproduction.md reproduction/results/xgboost_10pair_results.csv
+          if git diff --cached --quiet; then
+            echo "No reproduction changes to commit."
+          else
+            git commit -m "Add 10-pair binary XGBoost reproduction results"
+            git push
+          fi
