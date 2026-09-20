@@ -1,0 +1,154 @@
+name: Fetch original research materials
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-original-materials:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install downloader
+        run: python -m pip install --upgrade pip gdown
+
+      - name: Download original implementation notebook
+        run: |
+          mkdir -p original notes
+          curl -L             "https://raw.githubusercontent.com/YunhwanJacobLee/Essential-elements-of-physical-fitness-analysis/main/implementation.ipynb"             -o original/implementation.ipynb
+
+      - name: Download original dataset from authors' Google Drive
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import gdown
+          import os
+          import shutil
+
+          url = "https://drive.google.com/file/d/1FQsj7kzYsinjBG_7tfz67fqtsuhNiAef/view?usp=sharing"
+          tmp = Path("_dataset_download")
+          tmp.mkdir(exist_ok=True)
+
+          cwd = Path.cwd()
+          os.chdir(tmp)
+          downloaded = gdown.download(url=url, output=None, quiet=False, fuzzy=True)
+          os.chdir(cwd)
+
+          if not downloaded:
+              raise SystemExit("Dataset download failed.")
+
+          src = tmp / Path(downloaded).name
+          size_bytes = src.stat().st_size
+          github_safe_limit = 95 * 1024 * 1024
+
+          if size_bytes > github_safe_limit:
+              Path("notes/dataset_download_report.md").write_text(
+                  "# Dataset download report\n\n"
+                  f"The original dataset was downloaded successfully from the authors' Google Drive.\n\n"
+                  f"- File name: {src.name}\n"
+                  f"- Size: {size_bytes / (1024*1024):.2f} MB\n"
+                  "- Status: Not committed because the file exceeds the safe GitHub file-size limit.\n"
+                  "- Source: Original authors' Google Drive link.\n",
+                  encoding="utf-8",
+              )
+              src.unlink()
+          else:
+              destination = Path("original") / src.name
+              shutil.move(str(src), str(destination))
+
+          shutil.rmtree(tmp, ignore_errors=True)
+          PY
+
+      - name: Generate checksums and source inventory
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+
+          original = Path("original")
+          notes = Path("notes")
+          notes.mkdir(exist_ok=True)
+
+          files = sorted(
+              p for p in original.iterdir()
+              if p.is_file() and p.name != ".gitkeep"
+          )
+
+          checksum_lines = []
+          rows = []
+
+          for p in files:
+              sha = hashlib.sha256(p.read_bytes()).hexdigest()
+              checksum_lines.append(f"{sha}  {p.as_posix()}")
+
+              if p.name == "implementation.ipynb":
+                  source = "Original authors' GitHub repository"
+                  purpose = "Original machine-learning implementation notebook"
+              else:
+                  source = "Original authors' Google Drive"
+                  purpose = "Original dataset supplied with the study"
+
+              rows.append(
+                  f"| `{p.name}` | `{p.suffix or 'unknown'}` | {source} | "
+                  f"{purpose} | No | `{sha}` |"
+              )
+
+          (notes / "original_sha256.txt").write_text(
+              "\n".join(checksum_lines) + ("\n" if checksum_lines else ""),
+              encoding="utf-8",
+          )
+
+          extra = ""
+          report = notes / "dataset_download_report.md"
+          if report.exists():
+              extra = (
+                  "\n## Dataset storage note\n\n"
+                  "The dataset download report is stored in "
+                  "`notes/dataset_download_report.md`.\n"
+              )
+
+          inventory = """# Source Inventory
+
+This document records the original research materials preserved for the reproduction of Lee et al. (2024), *Essential elements of physical fitness analysis in male adolescent athletes using machine learning*.
+
+## Preserved original materials
+
+| File name | File type | Source | Purpose | Modified? | SHA-256 |
+|---|---|---|---|---|---|
+""" + "\n".join(rows) + """
+
+## Preservation rule
+
+Files inside `original/` must remain unchanged.
+
+Any debugging, preprocessing, environment adaptation, or experimental changes must be performed only on copies stored in `reproduction/`.
+
+## Integrity verification
+
+SHA-256 checksums are stored in `notes/original_sha256.txt`.
+""" + extra
+
+          (notes / "source_inventory.md").write_text(inventory, encoding="utf-8")
+          PY
+
+      - name: Commit preserved materials
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add original notes
+          if git diff --cached --quiet; then
+            echo "No repository changes to commit."
+          else
+            git commit -m "Add preserved original research materials"
+            git push
+          fi
