@@ -1,0 +1,44 @@
+name: Classical model comparison
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compare-models:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install model dependencies
+        run: |
+          python -m pip install --upgrade             pandas==3.0.6             scikit-learn==1.9.1             imbalanced-learn==0.14.2             xgboost
+
+      - name: Run classical model comparison
+        run: python reproduction/run_classical_model_comparison.py
+
+      - name: Show comparison report
+        run: |
+          echo "=== Classical Model Reproduction Comparison ==="
+          cat notes/classical_model_comparison.md
+
+      - name: Commit comparison outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes/classical_model_comparison.md reproduction/results/classical_model_metrics.csv
+          if git diff --cached --quiet; then
+            echo "No comparison changes to commit."
+          else
+            git commit -m "Add classical model reproduction comparison"
+            git push
+          fi
