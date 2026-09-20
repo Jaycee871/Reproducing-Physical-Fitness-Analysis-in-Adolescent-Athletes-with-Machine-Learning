@@ -1,0 +1,44 @@
+name: Logistic regression baseline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  logistic-baseline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install baseline dependencies
+        run: |
+          python -m pip install --upgrade pandas==3.0.6 scikit-learn==1.9.1 imbalanced-learn==0.14.2
+
+      - name: Run Logistic Regression baseline
+        run: python reproduction/run_logistic_baseline.py
+
+      - name: Show baseline report
+        run: |
+          echo "=== Logistic Regression Baseline ==="
+          cat notes/logistic_regression_baseline.md
+
+      - name: Commit baseline report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes/logistic_regression_baseline.md
+          if git diff --cached --quiet; then
+            echo "No baseline changes to commit."
+          else
+            git commit -m "Add Logistic Regression baseline results"
+            git push
+          fi
