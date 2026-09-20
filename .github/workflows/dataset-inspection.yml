@@ -1,0 +1,43 @@
+name: Dataset inspection
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect-dataset:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install inspection dependencies
+        run: python -m pip install --upgrade pandas tabulate
+
+      - name: Inspect preserved dataset
+        run: python reproduction/inspect_dataset.py
+
+      - name: Show generated report
+        run: |
+          echo "=== Dataset inspection report ==="
+          cat notes/dataset_inspection.md
+
+      - name: Commit inspection report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes/dataset_inspection.md
+          if git diff --cached --quiet; then
+            echo "No report changes to commit."
+          else
+            git commit -m "Add automated dataset inspection report"
+            git push
+          fi
