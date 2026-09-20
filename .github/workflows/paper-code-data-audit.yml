@@ -1,0 +1,43 @@
+name: Paper code data audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install audit dependency
+        run: python -m pip install --upgrade pandas
+
+      - name: Run paper-code-data consistency audit
+        run: python reproduction/audit_paper_code_data.py
+
+      - name: Show audit report
+        run: |
+          echo "=== Paper-Code-Data Audit ==="
+          cat notes/paper_code_data_audit.md
+
+      - name: Commit audit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes/paper_code_data_audit.md
+          if git diff --cached --quiet; then
+            echo "No audit changes to commit."
+          else
+            git commit -m "Add automated paper-code-data consistency audit"
+            git push
+          fi
