@@ -8,7 +8,7 @@ Lee et al. (2024), *Essential elements of physical fitness analysis in male adol
 
 | File name | File type | Source | Purpose | Modified? |
 |---|---|---|---|---|
-| `.gitkeep` | Placeholder file | Created during repository setup | Keeps the `original/` directory tracked by Git | No research content; not an original study file |
+| `.gitkeep` | Placeholder file | Created during repository setup | Keeps the `original/` directory tracked by Git | No — placeholder; not an original study file |
 
 ## Missing original research materials
 
