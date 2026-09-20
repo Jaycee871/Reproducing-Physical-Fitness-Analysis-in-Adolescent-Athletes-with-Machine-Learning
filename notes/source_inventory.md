@@ -6,15 +6,15 @@ This document records the original research materials preserved for the reproduc
 
 | File name | Source | Purpose | Modified? |
 |---|---|---|---|
-|  | Original authors' GitHub repository | Original machine-learning implementation notebook | No |
-|  | Original authors' Google Drive | Original dataset supplied with the study | No |
+| `implementation.ipynb` | Original authors' GitHub repository | Original machine-learning implementation notebook | No |
+| `sports datasets.csv` | Original authors' Google Drive | Original dataset supplied with the study | No |
 
 ## Preservation rule
 
-Files inside  must remain unchanged.
+Files inside `original/` must remain unchanged.
 
-Any debugging, preprocessing, environment adaptation, or experimental changes must be performed only on copies stored in .
+Any debugging, preprocessing, environment adaptation, or experimental changes must be performed only on copies stored in `reproduction/`.
 
 ## Integrity verification
 
-SHA-256 checksums are stored in .
+SHA-256 checksums are stored in `notes/original_sha256.txt`.
