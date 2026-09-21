@@ -6,6 +6,16 @@
 
 本專案以公開論文、公開 GitHub notebook 與公開 dataset 為基礎，建立一套可以在 GitHub Actions 中重新執行、留下紀錄並檢查差異的研究重現流程。
 
+## 中文重現海報
+
+<p align="center">
+  <img src="reproduction/poster/poster_preview.png" alt="青少年男性運動員體適能機器學習分析重現研究海報" width="100%">
+</p>
+
+海報作者：**葉倖妤｜中國文化大學 資訊管理學系 3B｜b3215437@ulive.pccu.edu.tw**
+
+海報採用與 ICML 2026 Agent Reproduction Challenge 類似的 evidence-board 結構，完整原始檔與 self-contained embed 位於 [`reproduction/poster/`](reproduction/poster/)。
+
 ## 重現狀態
 
 **核心重現流程已完成。**
