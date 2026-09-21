@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>青少年男性運動員體適能機器學習研究之重現</title>
+<style>
+@page { size: 60in 36in; margin: 0; }
+:root{
+  --bg:#f5f7fb;
+  --ink:#0f172a;
+  --muted:#475569;
+  --line:#cbd5e1;
+  --panel:#ffffff;
+  --accent:#0f766e;
+  --accent2:#1d4ed8;
+  --warn:#b45309;
+  --ok:#166534;
+  --soft:#e2e8f0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","Noto Sans CJK TC","PingFang TC","Microsoft JhengHei",Arial,sans-serif}
+.poster{
+  width:60in;height:36in;
+  padding:0.72in 0.78in 0.58in;
+  display:grid;
+  grid-template-rows:3.75in 1fr 1.5in;
+  gap:0.34in;
+  background:
+    radial-gradient(circle at 86% 3%, rgba(29,78,216,.08), transparent 15%),
+    radial-gradient(circle at 5% 100%, rgba(15,118,110,.08), transparent 18%),
+    var(--bg);
+}
+header{
+  display:grid;grid-template-columns:1fr 10.5in;gap:.5in;
+  align-items:center;border-bottom:5px solid var(--ink);padding-bottom:.22in
+}
+h1{font-size:42pt;line-height:1.07;margin:0 0 .18in;font-weight:850;letter-spacing:-.7px}
+.subtitle{font-size:19pt;color:var(--muted);font-weight:650}
+.meta{font-size:16pt;color:var(--muted);margin-top:.16in}
+.hero{
+  background:var(--ink);color:white;border-radius:.24in;padding:.38in .42in;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center;
+  box-shadow:0 10px 24px rgba(15,23,42,.12)
+}
+.hero .num{font-size:38pt;font-weight:900;line-height:1}
+.hero .lbl{font-size:13.5pt;margin-top:.08in;color:#cbd5e1}
+.hero .arrow{font-size:32pt;padding:0 .18in;color:#93c5fd}
+.hero .gap{grid-column:1/4;margin-top:.18in;font-size:15pt;color:#d1fae5}
+.columns{display:grid;grid-template-columns:1.02fr 1.04fr 1.16fr 1.04fr;gap:.28in;min-height:0}
+.col{display:flex;flex-direction:column;gap:.22in;min-height:0}
+.card{
+  background:var(--panel);border:2px solid var(--line);border-radius:.18in;
+  padding:.24in .28in;box-shadow:0 5px 14px rgba(15,23,42,.045)
+}
+.card h2{font-size:21pt;line-height:1.1;margin:0 0 .14in;font-weight:850}
+.card h3{font-size:16pt;margin:0 0 .10in;color:var(--accent2)}
+p,li{font-size:13.5pt;line-height:1.34}
+p{margin:.07in 0}
+ul{margin:.05in 0 .02in .28in;padding:0}
+li{margin:.055in 0}
+.kicker{font-size:11.5pt;text-transform:uppercase;letter-spacing:1px;font-weight:850;color:var(--accent)}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.12in;margin-top:.12in}
+.stat{background:#f8fafc;border:1.5px solid var(--line);border-radius:.12in;padding:.12in;text-align:center}
+.stat b{font-size:20pt;display:block}.stat span{font-size:10.5pt;color:var(--muted)}
+.flow{display:flex;flex-direction:column;gap:.07in}
+.step{padding:.105in .13in;border-radius:.10in;background:#eef2ff;border-left:7px solid var(--accent2);font-size:12.2pt;font-weight:700}
+.step.alt{background:#ecfdf5;border-left-color:var(--accent)}
+.arrowdown{text-align:center;color:#64748b;font-size:14pt;line-height:.9}
+.auditgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.09in}
+.audit{border-radius:.12in;padding:.12in;background:#f8fafc;border:1.5px solid var(--line)}
+.audit b{font-size:13pt}.audit p{font-size:11.2pt}
+.bad{color:#991b1b;font-weight:800}.good{color:var(--ok);font-weight:800}
+.bigcallout{border:3px solid var(--accent2);background:#eff6ff}
+.bigcallout .main{font-size:28pt;font-weight:900;color:var(--accent2);line-height:1.05}
+.bigcallout .sub{font-size:13pt;color:var(--muted)}
+.table{width:100%;border-collapse:collapse;font-size:10.8pt}
+.table th,.table td{border-bottom:1px solid #dbe3ee;padding:.055in .06in;text-align:right}
+.table th:first-child,.table td:first-child{text-align:left}
+.table th{font-size:10pt;color:#334155;background:#f8fafc}
+.bars{display:flex;flex-direction:column;gap:.065in}
+.barrow{display:grid;grid-template-columns:2.15in 1fr 0.65in;align-items:center;gap:.08in}
+.barlabel{font-size:10.3pt;font-weight:700;line-height:1.05}
+.track{height:.20in;background:#e2e8f0;border-radius:99px;overflow:hidden;position:relative}
+.fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px}
+.barval{font-size:10.3pt;font-weight:800;text-align:right}
+.legend{display:flex;gap:.16in;font-size:10.5pt;color:var(--muted);margin-bottom:.08in}
+.dot{display:inline-block;width:.10in;height:.10in;border-radius:50%;background:var(--accent2);margin-right:.04in}
+.finding{padding:.10in .12in;border-left:7px solid var(--warn);background:#fff7ed;border-radius:.07in;margin:.07in 0}
+.finding b{font-size:12.2pt}.finding span{font-size:11.2pt;color:#7c2d12}
+.status{background:#ecfdf5;border:3px solid #22c55e}
+.status h2{color:var(--ok)}
+.status .verdict{font-size:24pt;font-weight:900;line-height:1.05;color:var(--ok)}
+.glossary{display:grid;grid-template-columns:1fr 1fr;gap:.08in}
+.term{background:#f8fafc;border-radius:.09in;padding:.09in .11in;border:1px solid var(--line)}
+.term b{font-size:11.5pt}.term span{font-size:10.4pt;color:var(--muted);display:block;margin-top:.02in}
+footer{
+  border-top:2px solid var(--line);padding-top:.18in;
+  display:grid;grid-template-columns:1.6fr 1fr 1.2fr;gap:.28in;align-items:center
+}
+footer p{font-size:10.8pt;color:var(--muted);line-height:1.22}
+.repo{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9.8pt;color:#334155;word-break:break-all}
+.badge{display:inline-block;padding:.045in .09in;border-radius:99px;background:#e0f2fe;color:#075985;font-size:10pt;font-weight:800;margin-right:.05in}
+.small{font-size:10.4pt;color:var(--muted)}
+.note{font-size:9.7pt;color:#64748b;line-height:1.2}
+</style>
+</head>
+<body>
+<div class="poster">
+<header>
+  <div>
+    <div class="kicker">Reproduction Study · Machine Learning · Sports Science</div>
+    <h1>青少年男性運動員體適能機器學習研究之重現</h1>
+    <div class="subtitle">從公開資料、程式碼與論文描述重建 10 組 XGBoost 二元分類實驗</div>
+    <div class="meta">學生姓名：＿＿＿＿＿＿　｜　中國文化大學　｜　GitHub-based reproducibility workflow</div>
+  </div>
+  <div class="hero">
+    <div><div class="num">90.14%</div><div class="lbl">原論文文字報告<br>平均 Accuracy</div></div>
+    <div class="arrow">→</div>
+    <div><div class="num">89.20%</div><div class="lbl">公開 notebook 流程<br>重建平均 Accuracy</div></div>
+    <div class="gap">平均差異約 <b>0.94 個百分點</b>　｜　close reconstruction</div>
+  </div>
+</header>
+
+<main class="columns">
+
+<section class="col" data-measure-role="column">
+  <div class="card">
+    <div class="kicker">01 · Reproduction Target</div>
+    <h2>我們要重現什麼？</h2>
+    <p>Lee 等人（2024）以男性青少年運動員的體適能指標，利用機器學習區分不同運動項目。原研究的主要結果來自 <b>5 種運動兩兩配對</b>，共形成 <b>10 組二元分類</b>。</p>
+    <p><b>二元分類：</b>一次只判斷兩個類別，例如「田徑 vs 足球」。</p>
+  </div>
+
+  <div class="card">
+    <h2>研究問題</h2>
+    <ul>
+      <li>公開的論文、程式碼與資料，是否足以重新建立主要分析流程？</li>
+      <li>原論文 XGBoost 的約 90% 平均準確率，能否接近重現？</li>
+      <li>Paper、Code、Data 三者是否完全一致？</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>公開資料概況</h2>
+    <div class="statgrid">
+      <div class="stat"><b>1,434</b><span>資料筆數</span></div>
+      <div class="stat"><b>15</b><span>體適能特徵</span></div>
+      <div class="stat"><b>5</b><span>運動類別</span></div>
+    </div>
+    <p class="small"><b>類別：</b>足球 537、田徑 402、棒球 328、游泳 105、羽球 62。</p>
+    <p class="small"><span class="good">缺失值 0</span>　｜　<span class="good">完全重複資料 0</span></p>
+  </div>
+
+  <div class="card">
+    <h2>核心專有名詞</h2>
+    <div class="glossary">
+      <div class="term"><b>XGBoost</b><span>由多棵決策樹逐步修正錯誤的分類模型。</span></div>
+      <div class="term"><b>Accuracy</b><span>模型預測正確的比例，也就是準確率。</span></div>
+      <div class="term"><b>SMOTE</b><span>替少數類別產生新的訓練樣本，降低類別不平衡。</span></div>
+      <div class="term"><b>StandardScaler</b><span>把不同單位的數值調整到相近尺度。</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="col" data-measure-role="column">
+  <div class="card">
+    <div class="kicker">02 · Audit & Reconstruction</div>
+    <h2>先核對，再跑模型</h2>
+    <div class="auditgrid">
+      <div class="audit"><b>Paper</b><p>Abstract：<span class="bad">1,489</span><br>Methods：<span class="good">1,434</span><br>Scaling：−1 到 1</p></div>
+      <div class="audit"><b>Code</b><p>Stored counts：<span class="bad">2,427</span><br>X / y 來源不完整<br>使用 StandardScaler</p></div>
+      <div class="audit"><b>Data</b><p><span class="good">1,434 rows</span><br>15 features<br>5 sports</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>重建流程</h2>
+    <div class="flow">
+      <div class="step">公開 CSV：1,434 × 16</div>
+      <div class="arrowdown">↓</div>
+      <div class="step">X / y 分離：15 個體適能特徵 + 運動類別</div>
+      <div class="arrowdown">↓</div>
+      <div class="step">80 / 20 分層切分（保持各類別比例）</div>
+      <div class="arrowdown">↓</div>
+      <div class="step alt">StandardScaler 或 MinMaxScaler</div>
+      <div class="arrowdown">↓</div>
+      <div class="step alt">SMOTE：只作用在訓練資料</div>
+      <div class="arrowdown">↓</div>
+      <div class="step">XGBoost → 10 組運動 pair</div>
+      <div class="arrowdown">↓</div>
+      <div class="step">與原論文 Accuracy / AUROC / F1 比較</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>兩種公開材料重建路徑</h2>
+    <h3>A. 論文文字流程</h3>
+    <p class="small">全資料分層切分 → 取兩種運動 → MinMaxScaler（−1 到 1）→ SMOTE → XGBoost</p>
+    <h3 style="margin-top:.13in">B. 公開 Notebook 流程</h3>
+    <p class="small">先取兩種運動 → 分層切分 → StandardScaler → SMOTE → XGBoost</p>
+  </div>
+
+  <div class="card">
+    <h2>防止資料洩漏</h2>
+    <p><b>資料洩漏：</b>測試資料提前影響模型訓練，會讓結果看起來不真實地更好。</p>
+    <ul>
+      <li>Scaler 只用 training data 學習。</li>
+      <li>SMOTE 只補 training data。</li>
+      <li>Test set 不參與資料補樣。</li>
+    </ul>
+  </div>
+</section>
+
+<section class="col" data-measure-role="column">
+  <div class="card bigcallout">
+    <div class="kicker">03 · Main Results</div>
+    <h2>主要結果：10 組 XGBoost</h2>
+    <div class="main">89.20%</div>
+    <div class="sub">Public-notebook protocol 平均 Accuracy</div>
+    <p><b>原論文文字：</b>約 90.14%　｜　<b>平均差異：</b>約 0.94 個百分點</p>
+  </div>
+
+  <div class="card">
+    <h2>10 組準確率比較</h2>
+    <table class="table">
+      <thead><tr><th>運動組合</th><th>原論文</th><th>Notebook 重建</th></tr></thead>
+      <tbody>
+        <tr><td>田徑 vs 足球</td><td>86.70%</td><td>83.51%</td></tr>
+        <tr><td>田徑 vs 棒球</td><td>89.04%</td><td>89.73%</td></tr>
+        <tr><td>田徑 vs 游泳</td><td>92.16%</td><td>87.25%</td></tr>
+        <tr><td>田徑 vs 羽球</td><td>93.55%</td><td>95.70%</td></tr>
+        <tr><td>足球 vs 棒球</td><td>87.28%</td><td>84.97%</td></tr>
+        <tr><td>足球 vs 游泳</td><td>91.47%</td><td>93.02%</td></tr>
+        <tr><td>足球 vs 羽球</td><td>90.00%</td><td>87.50%</td></tr>
+        <tr><td>棒球 vs 游泳</td><td>91.95%</td><td>91.95%</td></tr>
+        <tr><td>棒球 vs 羽球</td><td>91.03%</td><td>87.18%</td></tr>
+        <tr><td>游泳 vs 羽球</td><td>88.28%</td><td>91.18%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>每組重建 Accuracy</h2>
+    <div class="legend"><span><i class="dot"></i>Public-notebook reconstruction</span></div>
+    <div class="bars">
+      <div class="barrow"><div class="barlabel">田徑–足球</div><div class="track"><div class="fill" style="width:83.51%"></div></div><div class="barval">83.51</div></div>
+      <div class="barrow"><div class="barlabel">田徑–棒球</div><div class="track"><div class="fill" style="width:89.73%"></div></div><div class="barval">89.73</div></div>
+      <div class="barrow"><div class="barlabel">田徑–游泳</div><div class="track"><div class="fill" style="width:87.25%"></div></div><div class="barval">87.25</div></div>
+      <div class="barrow"><div class="barlabel">田徑–羽球</div><div class="track"><div class="fill" style="width:95.70%"></div></div><div class="barval">95.70</div></div>
+      <div class="barrow"><div class="barlabel">足球–棒球</div><div class="track"><div class="fill" style="width:84.97%"></div></div><div class="barval">84.97</div></div>
+      <div class="barrow"><div class="barlabel">足球–游泳</div><div class="track"><div class="fill" style="width:93.02%"></div></div><div class="barval">93.02</div></div>
+      <div class="barrow"><div class="barlabel">足球–羽球</div><div class="track"><div class="fill" style="width:87.50%"></div></div><div class="barval">87.50</div></div>
+      <div class="barrow"><div class="barlabel">棒球–游泳</div><div class="track"><div class="fill" style="width:91.95%"></div></div><div class="barval">91.95</div></div>
+      <div class="barrow"><div class="barlabel">棒球–羽球</div><div class="track"><div class="fill" style="width:87.18%"></div></div><div class="barval">87.18</div></div>
+      <div class="barrow"><div class="barlabel">游泳–羽球</div><div class="track"><div class="fill" style="width:91.18%"></div></div><div class="barval">91.18</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Diagnostic Multiclass Baseline</h2>
+    <p class="small">五類一次分類只作為診斷，不直接與原論文二元分類結果比較。</p>
+    <table class="table">
+      <tr><th>模型</th><th>Accuracy</th><th>Macro F1</th></tr>
+      <tr><td>XGBoost</td><td>66.90%</td><td>0.6074</td></tr>
+      <tr><td>SVM</td><td>60.63%</td><td>0.4739</td></tr>
+      <tr><td>Random Forest</td><td>60.63%</td><td>0.5602</td></tr>
+      <tr><td>Logistic Regression</td><td>49.48%</td><td>0.4742</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="col" data-measure-role="column">
+  <div class="card">
+    <div class="kicker">04 · Reproducibility Findings</div>
+    <h2>哪些地方無法完全對上？</h2>
+    <div class="finding"><b>樣本數不一致</b><br><span>Abstract 1,489；Methods 與公開 CSV 為 1,434。</span></div>
+    <div class="finding"><b>X / y 建立流程缺失</b><br><span>Notebook 使用 teen_running_soccer 與 teen_runsoc_target，但未公開如何建立。</span></div>
+    <div class="finding"><b>Scaling 描述不一致</b><br><span>論文描述 −1 到 1；公開 notebook 使用 StandardScaler。</span></div>
+    <div class="finding"><b>Hyperparameter search 不完整</b><br><span>論文提到 1,000 次 random search，但 10 組最佳參數未完整公開。</span></div>
+  </div>
+
+  <div class="card status">
+    <h2>Reproduction Status</h2>
+    <div class="verdict">Close reconstruction supported</div>
+    <p>主要 10 組 XGBoost 結果可利用公開材料重建到接近原論文的程度，但不足以宣稱完全相同的 execution-level replication。</p>
+  </div>
+
+  <div class="card">
+    <h2>這代表什麼？</h2>
+    <ul>
+      <li><b>主要結果具有相當程度可重建性：</b>89.20% 接近原論文約 90.14%。</li>
+      <li><b>公開材料仍不完整：</b>無法證明作者原始 pipeline 每一步都被完全復原。</li>
+      <li><b>重現研究的價值：</b>不只是「把程式跑起來」，還要找出 paper、code、data 的一致與不一致。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>GitHub 自動化證據</h2>
+    <p><span class="badge">GitHub Actions</span><span class="badge">Re-runnable</span><span class="badge">Versioned</span></p>
+    <p class="small">主要流程皆可由 GitHub Actions 重新執行：資料檢查、Paper–Code–Data audit、前處理重建、模型比較與 10-pair XGBoost reproduction。</p>
+    <p class="small"><b>真正執行模型的程式：</b><br><code>reproduction/run_10pair_xgboost.py</code></p>
+  </div>
+
+  <div class="card">
+    <h2>結論</h2>
+    <p>本研究利用公開資料、程式碼與 GitHub 自動化流程，成功重建原研究最核心的 10 組 XGBoost 二元分類。公開 notebook 流程得到 <b>89.20%</b> 平均準確率，與原論文約 <b>90.14%</b> 接近。</p>
+    <p class="small">因此，本研究定位為：<b>高度接近的公開材料重建</b>，而不是完全相同的原始執行環境複製。</p>
+  </div>
+</section>
+
+</main>
+
+<footer data-measure-role="footer-strip">
+  <div>
+    <p><b>原始研究：</b>Lee, Y.-H. et al. (2024). <i>Essential elements of physical fitness analysis in male adolescent athletes using machine learning.</i> PLOS ONE 19(4): e0298870.</p>
+    <p class="note">註：原論文文字報告平均 Accuracy 約 90.14%；以本文表格 10 組數值重新平均約為 90.15%，屬四捨五入差異。</p>
+  </div>
+  <div>
+    <p><b>專案完整結果：</b><br><span class="repo">github.com/Jaycee871/Reproducing-Physical-Fitness-Analysis-in-Adolescent-Athletes-with-Machine-Learning</span></p>
+  </div>
+  <div>
+    <p><b>關鍵輸出：</b><br><code>notes/final_reproduction_summary.md</code><br><code>notes/xgboost_10pair_reproduction.md</code></p>
+  </div>
+</footer>
+</div>
+</body>
+</html>
