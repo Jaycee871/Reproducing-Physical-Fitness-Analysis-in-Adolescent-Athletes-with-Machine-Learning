@@ -195,6 +195,10 @@ reproduction/
   run_10pair_xgboost.py
   results/
 
+presentation/
+  青少年運動員體適能ML重現研究.pptx
+  README.md
+
 notes/
   source_inventory.md
   dataset_inspection.md
